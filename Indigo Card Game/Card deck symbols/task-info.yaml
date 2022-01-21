@@ -66,6 +66,9 @@ files:
         println("Hello World!")
     }
   learner_created: false
-feedback_link: https://hyperskill.org/projects/214/stages/1072/implement#comment
-status: Unchecked
-record: -1
+feedback_link: https://hyperskill.org/learn/step/16508#comment
+status: Solved
+feedback:
+  message: Congratulations!
+  time: Wed, 12 Jan 2022 17:04:23 UTC
+record: 1

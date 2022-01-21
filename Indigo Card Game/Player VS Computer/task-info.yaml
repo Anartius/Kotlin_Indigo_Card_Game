@@ -570,7 +570,7 @@ files:
         if (candidates.size == 0) {                       // No candidate cards
             var cardsToPlay = getSameSuit(cardsInHand)
             if (cardsToPlay.isNotEmpty()) return cardsToPlay
-            cardsToPlay = getSameRank(candidates).toMutableList()
+            cardsToPlay = getSameRank(cardsInHand).toMutableList()
             if (cardsToPlay.isNotEmpty()) return cardsToPlay
             else return cardsInHand
         }
@@ -616,6 +616,6 @@ files:
 
 
   learner_created: false
-feedback_link: https://hyperskill.org/projects/214/stages/1076/implement#comment
+feedback_link: https://hyperskill.org/learn/step/16512#comment
 status: Unchecked
 record: -1
