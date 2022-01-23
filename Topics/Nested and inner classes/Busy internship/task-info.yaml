@@ -1,0 +1,22 @@
+type: code
+files:
+- name: src/Main.kt
+  visible: true
+  text: |-
+    class Intern(val weeklyWorkload: Int) {
+        val baseWorkload = 20
+
+        class Salary {
+            val basePay = 50
+            val extraHoursPay = 2.8
+        }
+
+        val weeklySalary = ...
+    }
+  learner_created: false
+feedback_link: https://hyperskill.org/learn/step/14732#comment
+status: Solved
+feedback:
+  message: <html>Correct solution</html>
+  time: Sun, 23 Jan 2022 06:47:21 UTC
+record: -1

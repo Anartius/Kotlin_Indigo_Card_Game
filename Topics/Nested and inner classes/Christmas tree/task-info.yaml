@@ -1,0 +1,21 @@
+type: code
+files:
+- name: src/Main.kt
+  visible: true
+  text: |-
+    class ChristmasTree(var color: String) {
+
+        // create function putTreeTopper()
+
+        inner class TreeTopper(var color: String) {
+
+            // create function sparkle()
+        }
+    }
+  learner_created: false
+feedback_link: https://hyperskill.org/learn/step/14730#comment
+status: Solved
+feedback:
+  message: <html>Correct solution</html>
+  time: Sun, 23 Jan 2022 05:25:31 UTC
+record: -1

@@ -7,6 +7,15 @@
       <module name="Indigo_Card_Game.Indigo_Card_Game-task-build-test-results.main" target="11" />
       <module name="Indigo_Card_Game.Indigo_Card_Game-task-build-tmp.main" target="11" />
       <module name="Indigo_Card_Game.Indigo_Card_Game-task.main" target="11" />
+      <module name="Indigo_Card_Game.Topics-Nested_and_inner_classes-Busy_internship.main" target="11" />
+      <module name="Indigo_Card_Game.Topics-Nested_and_inner_classes-Christmas_tree.main" target="11" />
+      <module name="Indigo_Card_Game.Topics-Nested_and_inner_classes-Clothing_problem.main" target="11" />
+      <module name="Indigo_Card_Game.Topics-Nested_and_inner_classes-Heroes_and_villains.main" target="11" />
+      <module name="Indigo_Card_Game.Topics-Nested_and_inner_classes-Improve_your_vehicle.main" target="11" />
+      <module name="Indigo_Card_Game.Topics-Nested_and_inner_classes-New_Inner_class.main" target="11" />
+      <module name="Indigo_Card_Game.Topics-Nested_and_inner_classes-Pumpkin_and_candle.main" target="11" />
+      <module name="Indigo_Card_Game.Topics-Nested_and_inner_classes-Theory.main" target="11" />
+      <module name="Indigo_Card_Game.Topics-Nested_and_inner_classes-Your_vehicle.main" target="11" />
       <module name="Indigo_Card_Game.util.main" target="11" />
     </bytecodeTargetLevel>
   </component>
