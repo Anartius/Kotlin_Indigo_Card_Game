@@ -9,6 +9,16 @@ data class DeckCard(val rank: String, val suit: String) {
     fun deckCardAsString(): String {
         return "$rank$suit "
     }
+
+    fun equals(other: DeckCard): Boolean {
+        return this.rank == other.rank || this.suit == other.suit
+    }
+}
+
+data class Player(var scores: Int = 0) {
+
+    val wonCards = mutableListOf<DeckCard>()
+    val inHand = mutableListOf<DeckCard>()
 }
 
 fun main() {
@@ -17,9 +27,12 @@ fun main() {
     val suits = listOf("♦", "♥", "♠", "♣")
     val deckCards = mutableListOf<DeckCard>()
     var playersTurn: Boolean
+    val playerFirst: Boolean
+    var playerWonLast: Boolean
+    var exit = false
     var lastOnTheTable: String
-    var playerCards: MutableList<DeckCard>
-    var computerCards: MutableList<DeckCard>
+    val player = Player()
+    val computer = Player()
     var choice: Int
 
     println("Indigo Card Game")
@@ -31,10 +44,14 @@ fun main() {
         when (readLine()!!) {
             "yes" -> {
                 playersTurn = true
+                playerFirst = true
+                playerWonLast = true
                 break
             }
             "no" -> {
                 playersTurn = false
+                playerFirst = false
+                playerWonLast = false
                 break
             }
             "exit" -> {
@@ -48,43 +65,82 @@ fun main() {
     print("Initial cards on the table: ")
     val cardsOnTheTable = getDeckCards(deckCards, 4)
     cardsOnTheTable.forEach { it.printDeckCard() }
-    println("\n")
+    println()
 
-    playerCards = getDeckCards(deckCards, 6)
-    computerCards = getDeckCards(deckCards, 6)
+    player.inHand.addAll(getDeckCards(deckCards, 6))
+    computer.inHand.addAll(getDeckCards(deckCards, 6))
 
-    while (true) {
-        lastOnTheTable = cardsOnTheTable.last().deckCardAsString()
-        println("${cardsOnTheTable.size} cards on the table, " +
-            "and the top card is $lastOnTheTable"
-        )
-        if (cardsOnTheTable.size == 52) break
+    while (!exit) {
+
+        if (cardsOnTheTable.isNotEmpty()) {
+            lastOnTheTable = cardsOnTheTable.last().deckCardAsString()
+            println(
+                "\n${cardsOnTheTable.size} cards on the table, " +
+                        "and the top card is $lastOnTheTable"
+            )
+        } else println("No cards on the table")
+
+        if (deckCards.isEmpty() &&
+            (player.inHand.size == 0 && computer.inHand.size == 0)) {
+            exit = true
+            break
+        }
+        if (cardsOnTheTable.size == 52) {
+            exit = true
+            break
+        }
 
         if (playersTurn) {
-            if (playerCards.size == 0) {
-                playerCards = getDeckCards(deckCards, 6)
+            if (player.inHand.size == 0) {
+                if (deckCards.isNotEmpty()) {
+                    player.inHand.addAll(getDeckCards(deckCards, 6))
+                } else {
+                    exit = true
+                    break
+                }
             }
             print("Cards in hand: ")
-            for (i in 0 until playerCards.size) {
-                print("${i + 1})${playerCards[i].deckCardAsString()}")
+            for (i in 0 until player.inHand.size) {
+                print("${i + 1})${player.inHand[i].deckCardAsString()}")
             }
             println()
 
             while (true) {
-                println("Choose a card to play (1-${playerCards.size}):")
+                println("Choose a card to play (1-${player.inHand.size}):")
                 val input = readLine()!!
                 if (input == "exit") {
+
                     println("Game Over")
                     return
                 }
+
                 try {
                     choice = input.toInt()
-                    if (choice !in 1..playerCards.size) throw NumberFormatException()
+                    if (choice !in 1..player.inHand.size) throw NumberFormatException()
                 } catch (e: NumberFormatException) {
                     continue
                 }
-                cardsOnTheTable.add(playerCards[choice - 1])
-                playerCards.removeAt(choice - 1)
+
+                cardsOnTheTable.add(player.inHand[choice - 1])
+
+                if (cardsOnTheTable.size > 1 &&
+                    cardsOnTheTable[cardsOnTheTable.size - 2]
+                        .equals(player.inHand[choice - 1])) {
+
+                    playerWonLast = true
+                    player.scores += checkScores(cardsOnTheTable)
+                    player.wonCards.addAll(cardsOnTheTable)
+                    cardsOnTheTable.clear()
+                    println("Player wins cards")
+                    getScores(player, computer)
+                    println()
+                }
+                player.inHand.removeAt(choice - 1)
+
+                break
+            }
+            if (computer.inHand.size == 0 && deckCards.size == 0) {
+                exit = true
                 break
             }
             playersTurn = !playersTurn
@@ -92,24 +148,76 @@ fun main() {
         } else {
 
             while (true) {
-                if (computerCards.size == 0) {
-                    computerCards = getDeckCards(deckCards, 6)
+                if (computer.inHand.size == 0) {
+                    if (deckCards.isNotEmpty()) {
+                        computer.inHand.addAll(getDeckCards(deckCards, 6))
+                    } else {
+                        exit = true
+                        break
+                    }
                 }
 
-                val random = if (computerCards.size == 1) {
+                val random = if (computer.inHand.size == 1) {
                     0
-                } else Random.nextInt(0, computerCards.size - 1)
+                } else Random.nextInt(0, computer.inHand.size - 1)
 
-                cardsOnTheTable.add(computerCards[random])
-                computerCards.removeAt(random)
-                println("Computer plays ${cardsOnTheTable.last().deckCardAsString()}\n")
+                cardsOnTheTable.add(computer.inHand[random])
+                println("Computer plays ${cardsOnTheTable.last().deckCardAsString()}")
+
+                if (cardsOnTheTable.size > 1 &&
+                    cardsOnTheTable[cardsOnTheTable.size - 2]
+                        .equals(computer.inHand[random])) {
+
+                    playerWonLast = false
+                    computer.scores += checkScores(cardsOnTheTable)
+                    computer.wonCards.addAll(cardsOnTheTable)
+                    cardsOnTheTable.clear()
+                    println("Computer wins cards")
+                    getScores(player, computer)
+                    println()
+                }
+                computer.inHand.removeAt(random)
+                break
+            }
+            if (player.inHand.size == 0 && deckCards.size == 0) {
+                exit = true
                 break
             }
             playersTurn = !playersTurn
         }
     }
-    println("Game Over")
+
+    if (exit) {
+        if (playerWonLast && cardsOnTheTable.size > 0) {
+                player.scores += checkScores(cardsOnTheTable)
+
+            player.wonCards.addAll(cardsOnTheTable)
+        } else if (!playerWonLast && cardsOnTheTable.size > 0) {
+
+            computer.scores += checkScores(cardsOnTheTable)
+            computer.wonCards.addAll(cardsOnTheTable)
+        }
+
+        if (player.scores > computer.scores ||
+                player.scores == computer.scores && playerFirst) {
+
+            player.scores += 3
+        } else computer.scores += 3
+
+        if (cardsOnTheTable.isNotEmpty()) {
+            lastOnTheTable = cardsOnTheTable.last().deckCardAsString()
+            println(
+                "\n${cardsOnTheTable.size} cards on the table, " +
+                        "and the top card is $lastOnTheTable"
+            )
+        } else println("No cards on the table")
+
+        getScores(player, computer)
+        println("Game Over")
+        return
+    }
 }
+
 
 fun createDeckCards(ranks: List<String>, suits: List<String>,
                     deckCards: MutableList<DeckCard>) {
@@ -130,4 +238,19 @@ fun getDeckCards(deckCards: MutableList<DeckCard>,
         deckCards.removeFirst()
     }
     return output
+}
+
+fun checkScores(cardsOnTheTable: MutableList<DeckCard>): Int {
+    val regex = "[A10JQK]".toRegex()
+    var i = 0
+
+    cardsOnTheTable.forEach { if (it.rank.contains(regex)) i++ }
+    return i
+}
+
+fun getScores(player: Player, computer: Player) {
+    println("""
+        Score: Player ${player.scores} - Computer ${computer.scores}
+        Cards: Player ${player.wonCards.size} - Computer ${computer.wonCards.size}
+    """.trimIndent())
 }
